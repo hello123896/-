@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>PRECISION STRIKE</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+    </script>
+    <style>
+        /* ===== 极客风格全局 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #14141c;
+            --bg-card-hover: #1a1a26;
+            --border: #2a2a3a;
+            --text: #e8e8f0;
+            --text-secondary: #8888aa;
+            --text-muted: #555577;
+            --accent: #4a7aff;
+            --accent-glow: rgba(74, 122, 255, 0.15);
+            --green: #34c759;
+            --orange: #ff9500;
+            --red: #ff3b30;
+            --radius: 12px;
+            --radius-lg: 20px;
+            --font: -apple-system, "SF Pro Display", "Helvetica Neue", "PingFang SC", monospace;
+        }
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg);
+            font-family: var(--font);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+        .app-wrap {
+            max-width: 480px;
+            margin: 0 auto;
+            height: 100%;
+            overflow-y: auto;
+            padding: 0 0 80px 0;
+            animation: fadeIn 0.4s ease;
+            background: var(--bg);
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .container {
+            padding: 0 16px;
+        }
+
+        /* ===== 顶部 ===== */
+        .header {
+            padding: 20px 0 12px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding-left: 16px;
+            padding-right: 16px;
+            margin: 0 -16px;
+        }
+        .header h1 {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text);
+            cursor: pointer;
+            user-select: none;
+            font-family: var(--font);
+        }
+        .header h1 span {
+            color: var(--accent);
+        }
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .btn {
+            padding: 6px 16px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: var(--font);
+            letter-spacing: 0.3px;
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+        .btn-primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        .btn-outline {
+            border-color: var(--border);
+            color: var(--text-secondary);
+        }
+        #userDisplay {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ===== 公告栏 ===== */
+        .announcement-bar {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 8px 14px;
+            margin: 14px 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+        }
+        .announcement-bar .label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 1px;
+            flex-shrink: 0;
+            text-transform: uppercase;
+        }
+        .announcement-bar .scroll-wrap {
+            flex: 1;
+            overflow: hidden;
+            height: 24px;
+            position: relative;
+        }
+        .announcement-bar .scroll-track {
+            display: flex;
+            flex-direction: column;
+            animation: scrollAnnounce 12s ease-in-out infinite;
+        }
+        .announcement-bar .scroll-track .item {
+            height: 24px;
+            line-height: 24px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .announcement-bar .scroll-track .item strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        @keyframes scrollAnnounce {
+            0%,
+            25% {
+                transform: translateY(0);
+            }
+            33%,
+            58% {
+                transform: translateY(-24px);
+            }
+            66%,
+            91% {
+                transform: translateY(-48px);
+            }
+            100% {
+                transform: translateY(-72px);
+            }
+        }
+
+        /* ===== 抽成条 ===== */
+        .rate-banner {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 10px 16px;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .rate-banner .rate-value {
+            background: var(--accent);
+            color: #fff;
+            padding: 2px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== 通用 ===== */
+        .section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            margin: 20px 0 10px 0;
+            text-transform: uppercase;
+        }
+
+        /* ===== 订单卡片 ===== */
+        .order-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .order-card:active {
+            transform: scale(0.98);
+            background: var(--bg-card-hover);
+        }
+        .order-card .card-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .order-card .card-player {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .order-card .card-status {
+            font-size: 11px;
+            font-weight: 500;
+            padding: 2px 12px;
+            border-radius: 30px;
+            background: rgba(52, 199, 89, 0.12);
+            color: var(--green);
+            border: 1px solid rgba(52, 199, 89, 0.1);
+        }
+        .order-card .card-status.busy {
+            color: var(--orange);
+            border-color: rgba(255, 149, 0, 0.1);
+        }
+        .order-card .card-status.taken {
+            color: var(--accent);
+            border-color: rgba(74, 122, 255, 0.15);
+        }
+        .order-card .card-status.offline {
+            color: var(--text-muted);
+            border-color: var(--border);
+        }
+        .order-card .card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 10px;
+            margin: 8px 0 4px 0;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .order-card .card-meta span {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-size: 11px;
+        }
+        .order-card .card-meta .price {
+            background: var(--accent-glow);
+            color: var(--accent);
+            border: 1px solid rgba(74, 122, 255, 0.1);
+        }
+        .order-card .card-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin: 4px 0 4px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .order-card .card-footer {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            border-top: 1px solid var(--border);
+            padding-top: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .empty {
+            text-align: center;
+            padding: 60px 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        .empty .icon {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 10px;
+            opacity: 0.4;
+        }
+
+        /* ===== 底部导航 ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 15, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 6px 0 14px 0;
+            max-width: 480px;
+            margin: 0 auto;
+            z-index: 100;
+        }
+        .bottom-nav .nav-item {
+            background: none;
+            border: none;
+            font-size: 10px;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0px;
+            cursor: pointer;
+            padding: 4px 12px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: color 0.2s;
+        }
+        .bottom-nav .nav-item.active {
+            color: var(--text);
+        }
+        .bottom-nav .nav-item .nav-icon {
+            font-size: 20px;
+            line-height: 1.2;
+        }
+
+        /* ===== 模态框 ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 200;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        .modal-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px 24px;
+            max-width: 360px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: fadeIn 0.25s ease;
+        }
+        .modal-box h3 {
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+        .modal-box .form-group {
+            margin-bottom: 14px;
+        }
+        .modal-box .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+        .modal-box .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text);
+            outline: none;
+            transition: border 0.2s;
+        }
+        .modal-box .form-control:focus {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .modal-box .form-control::placeholder {
+            color: var(--text-muted);
+        }
+        .modal-box .btn-block {
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: var(--accent);
+            color: #fff;
+        }
+        .modal-box .btn-block:active {
+            transform: scale(0.97);
+        }
+        .modal-box .error-msg {
+            color: var(--red);
+            font-size: 13px;
+            text-align: center;
+            margin-top: 8px;
+            display: none;
+        }
+        .modal-box .error-msg.show {
+            display: block;
+        }
+        .modal-box .tag-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .modal-box .tag-option {
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            background: transparent;
+            font-size: 13px;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.15s;
+        }
+        .modal-box .tag-option.selected {
+            border-color: var(--accent);
+            background: var(--accent-glow);
+            color: var(--accent);
+        }
+
+        /* ===== 页面覆盖层 ===== */
+        .page-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg);
+            z-index: 150;
+            display: none;
+            flex-direction: column;
+            animation: fadeIn 0.3s ease;
+        }
+        .page-overlay.show {
+            display: flex;
+        }
+        .page-header {
+            padding: 14px 16px 10px 16px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .page-header .back {
+            font-size: 20px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px 6px;
+            color: var(--text-secondary);
+        }
+        .page-header .title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .page-header .placeholder {
+            width: 36px;
+        }
+        .page-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 18px 16px 30px 16px;
+        }
+
+        /* ===== 论坛 ===== */
+        .forum-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .forum-card .forum-author {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .forum-card .forum-author .name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .forum-card .forum-author .time {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .forum-card .forum-content {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 10px;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+        .forum-card .forum-actions {
+            display: flex;
+            gap: 16px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+        .forum-card .forum-actions button {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 0;
+            transition: color 0.2s;
+        }
+        .forum-card .forum-actions button:hover {
+            color: var(--text);
+        }
+        .forum-card .forum-actions button .count {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .forum-card .forum-comments {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+        .forum-card .forum-comments .comment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            font-size: 13px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+        }
+        .forum-card .forum-comments .comment-item .comment-author {
+            font-weight: 500;
+            color: var(--text);
+        }
+        .forum-card .forum-comments .comment-item .comment-time {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+        .forum-card .forum-comments .comment-input-wrap {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .forum-card .forum-comments .comment-input-wrap input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text);
+            font-size: 13px;
+            outline: none;
+        }
+        .forum-card .forum-comments .comment-input-wrap input:focus {
+            border-color: var(--accent);
+        }
+        .forum-card .forum-comments .comment-input-wrap button {
+            padding: 8px 16px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .forum-card .forum-comments .comment-input-wrap button:active {
+            opacity: 0.7;
+        }
+
+        /* ===== 好友 ===== */
+        .friend-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .friend-item .info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .friend-item .online-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .friend-item .online-dot.online {
+            background: var(--green);
+        }
+        .friend-item .online-dot.offline {
+            background: var(--text-muted);
+        }
+        .friend-item .actions {
+            display: flex;
+            gap: 6px;
+        }
+        .friend-item .actions button {
+            padding: 4px 12px;
+            border-radius: 30px;
+            border: none;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .friend-item .actions .btn-add {
+            background: rgba(52, 199, 89, 0.12);
+            color: var(--green);
+        }
+        .friend-item .actions .btn-chat {
+            background: rgba(74, 122, 255, 0.12);
+            color: var(--accent);
+        }
+        .friend-item .actions .btn-pending {
+            background: rgba(255, 149, 0, 0.1);
+            color: var(--orange);
+        }
+        .friend-item .actions .btn-accept {
+            background: rgba(52, 199, 89, 0.12);
+            color: var(--green);
+        }
+        .friend-item .actions .btn-reject {
+            background: rgba(255, 59, 48, 0.08);
+            color: var(--red);
+        }
+
+        /* ===== 聊天 ===== */
+        .chat-message {
+            padding: 8px 14px;
+            border-radius: var(--radius);
+            max-width: 80%;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        .chat-message.sent {
+            background: var(--accent);
+            color: #fff;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-message.received {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        .chat-message .time {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.4);
+            display: block;
+            margin-top: 2px;
+        }
+        .chat-message.received .time {
+            color: var(--text-muted);
+        }
+
+        /* ===== 详情 ===== */
+        .detail-hero {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 22px 16px 24px 16px;
+            margin: -18px -16px 18px -16px;
+        }
+        .detail-hero .price-big {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .detail-hero .price-big small {
+            font-size: 16px;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-left: 4px;
+        }
+        .detail-hero .earn-info {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        .detail-hero .status-badge {
+            display: inline-block;
+            padding: 3px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 8px;
+            border: 1px solid var(--border);
+        }
+        .detail-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px 16px;
+            margin-bottom: 12px;
+        }
+        .detail-section .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .detail-section .value {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text);
+        }
+        .detail-section .value.light {
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+        .contact-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .contact-row:last-child {
+            border-bottom: none;
+        }
+        .contact-row .label {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .contact-row .value {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+            text-align: right;
+            max-width: 60%;
+            word-break: break-word;
+        }
+
+        /* ===== 表单 ===== */
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            letter-spacing: 0.3px;
+        }
+        .form-group .sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text);
+            outline: none;
+            transition: border 0.2s;
+        }
+        .form-control:focus {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-hint {
+            font-size: 13px;
+            color: var(--green);
+            margin-top: 4px;
+            font-weight: 500;
+        }
+        .btn-block {
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-block:active {
+            transform: scale(0.97);
+        }
+        .btn-block-success {
+            background: var(--green);
+        }
+        .btn-block-danger {
+            background: var(--red);
+        }
+        .btn-block-secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .publish-step {
+            display: none;
+            animation: fadeIn 0.2s ease;
+        }
+        .publish-step.active {
+            display: block;
+        }
+        .price-suggest {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        .step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 2px;
+        }
+        .step-dot.active {
+            background: var(--accent);
+        }
+        .step-dot.done {
+            background: var(--text-muted);
+        }
+        .step-dot.empty {
+            background: var(--border);
+        }
+
+        @media (min-width: 768px) {
+            .app-wrap {
+                max-width: 720px;
+                padding: 0 24px 80px 24px;
+            }
+            .bottom-nav {
+                max-width: 720px;
+            }
+            .header h1 {
+                font-size: 22px;
+            }
+            .order-card {
+                padding: 20px 24px;
+            }
+            .card-player {
+                font-size: 18px;
+            }
+            .forum-card {
+                padding: 20px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app" class="app-wrap">
+        <div class="container">
+            <!-- ===== 顶部 ===== -->
+            <div class="header">
+                <h1 id="mainTitle">PRECISION<span>STRIKE</span></h1>
+                <div class="header-actions">
+                    <span id="userDisplay"></span>
+                    <button class="btn btn-outline" id="refreshBtn">⟳</button>
+                    <button class="btn btn-primary" id="publishBtn">+ 发布</button>
+                </div>
+            </div>
+
+            <!-- ===== 公告栏 ===== -->
+            <div class="announcement-bar" id="announcementBar">
+                <span class="label">📢 公告</span>
+                <div class="scroll-wrap">
+                    <div class="scroll-track" id="announcementTrack">
+                        <div class="item"><strong>本站特约鸣谢：</strong>资金供给方，柴奕辰。</div>
+                        <div class="item">加载中...</div>
+                        <div class="item">加载中...</div>
+                        <div class="item"><strong>本站特约鸣谢：</strong>资金供给方，柴奕辰。</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== 抽成 ===== -->
+            <div class="rate-banner">
+                <span>今日抽成 <strong id="rateDisplay">--</strong></span>
+                <span class="rate-value" id="rateValue">--</span>
+            </div>
+
+            <!-- ===== 内容 ===== -->
+            <div id="pageContent"></div>
+        </div>
+
+        <!-- ===== 底部导航 ===== -->
+        <div class="bottom-nav">
+            <button class="nav-item active" data-page="home"><span class="nav-icon">⌂</span>首页</button>
+            <button class="nav-item" data-page="forum"><span class="nav-icon">💬</span>论坛</button>
+            <button class="nav-item" data-page="friends"><span class="nav-icon">👥</span>好友</button>
+            <button class="nav-item" data-page="publish"><span class="nav-icon">+</span>发布</button>
+            <button class="nav-item" data-page="profile"><span class="nav-icon">◎</span>我的</button>
+        </div>
+    </div>
+
+    <!-- ===== 邀请码弹窗 ===== -->
+    <div class="modal-overlay" id="inviteModal">
+        <div class="modal-box">
+            <h3>🔑 进入平台</h3>
+            <div class="form-group">
+                <label>邀请码</label>
+                <input type="text" class="form-control" id="inviteCodeInput" placeholder="485868 + 后6位" value="485868">
+                <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">前6位固定 485868，后6位自定义</div>
+            </div>
+            <div class="form-group">
+                <label>昵称</label>
+                <input type="text" class="form-control" id="inviteNameInput" placeholder="给自己起个名字">
+            </div>
+            <div class="form-group">
+                <label>真实姓名</label>
+                <input type="text" class="form-control" id="inviteRealName" placeholder="请输入真实姓名">
+            </div>
+            <div class="form-group">
+                <label>身份</label>
+                <div class="tag-group" id="roleSelectGroup">
+                    <div class="tag-option selected" data-value="客户">客户</div>
+                    <div class="tag-option" data-value="打手">打手</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>安全密码 <span style="font-weight:400;color:var(--text-muted);font-size:12px;">（跨设备登录验证）</span></label>
+                <input type="password" class="form-control" id="inviteSecurityPass" placeholder="设置安全密码（至少6位）">
+            </div>
+            <div class="form-group">
+                <label>个人简介 <span style="font-weight:400;color:var(--text-muted);font-size:12px;">（选填）</span></label>
+                <textarea class="form-control" id="inviteBio" placeholder="介绍一下自己..." rows="2"></textarea>
+            </div>
+            <button class="btn-block" id="inviteSubmitBtn">进入</button>
+            <div class="error-msg" id="inviteError"></div>
+        </div>
+    </div>
+
+    <!-- ===== 安全密码验证弹窗 ===== -->
+    <div class="modal-overlay" id="securityModal">
+        <div class="modal-box">
+            <h3>🔐 安全验证</h3>
+            <p style="font-size:13px;color:var(--text-secondary);text-align:center;margin-bottom:16px;">该账号已在其他设备登录，请输入安全密码验证</p>
+            <div class="form-group">
+                <label>安全密码</label>
+                <input type="password" class="form-control" id="securityPassInput" placeholder="请输入安全密码">
+            </div>
+            <button class="btn-block" id="securitySubmitBtn">验证</button>
+            <div class="error-msg" id="securityError"></div>
+        </div>
+    </div>
+
+    <!-- ===== 发布页 ===== -->
+    <div class="page-overlay" id="publishPage">
+        <div class="page-header">
+            <button class="back" id="closePublishPage">✕</button>
+            <span class="title" id="publishTitle">发布新单</span>
+            <span class="placeholder"></span>
+        </div>
+        <div class="page-body">
+            <div style="display:flex;justify-content:center;gap:6px;margin-bottom:20px;">
+                <span class="step-dot active" id="ps1"></span>
+                <span class="step-dot empty" id="ps2"></span>
+                <span class="step-dot empty" id="ps3"></span>
+                <span class="step-dot empty" id="ps4"></span>
+            </div>
+            <!-- Step 1 -->
+            <div class="publish-step active" data-step="0">
+                <div class="form-group">
+                    <label>计费模式</label>
+                    <div class="tag-group" id="billingTypeGroup">
+                       
