@@ -40,6 +40,8 @@
             color: var(--text);
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
+            user-select: none;
+            -webkit-user-select: none;
         }
         ::-webkit-scrollbar {
             width: 4px;
@@ -141,17 +143,18 @@
             gap: 6px;
         }
 
-        /* ===== 公告栏 ===== */
+        /* ===== 公告栏（横向滚动） ===== */
         .announcement-bar {
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 8px 14px;
+            padding: 6px 14px;
             margin: 14px 0 10px 0;
+            overflow: hidden;
+            position: relative;
+            height: 32px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            overflow: hidden;
         }
         .announcement-bar .label {
             font-size: 11px;
@@ -159,47 +162,35 @@
             color: var(--accent);
             letter-spacing: 1px;
             flex-shrink: 0;
+            margin-right: 12px;
             text-transform: uppercase;
         }
         .announcement-bar .scroll-wrap {
             flex: 1;
             overflow: hidden;
-            height: 24px;
             position: relative;
         }
         .announcement-bar .scroll-track {
             display: flex;
-            flex-direction: column;
-            animation: scrollAnnounce 12s ease-in-out infinite;
+            white-space: nowrap;
+            animation: scrollMarquee 28s linear infinite;
         }
         .announcement-bar .scroll-track .item {
-            height: 24px;
-            line-height: 24px;
             font-size: 13px;
             color: var(--text-secondary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            padding-right: 60px;
+            flex-shrink: 0;
         }
         .announcement-bar .scroll-track .item strong {
             color: var(--text);
             font-weight: 600;
         }
-        @keyframes scrollAnnounce {
-            0%,
-            25% {
-                transform: translateY(0);
-            }
-            33%,
-            58% {
-                transform: translateY(-24px);
-            }
-            66%,
-            91% {
-                transform: translateY(-48px);
+        @keyframes scrollMarquee {
+            0% {
+                transform: translateX(0);
             }
             100% {
-                transform: translateY(-72px);
+                transform: translateX(-50%);
             }
         }
 
@@ -786,10 +777,14 @@
             font-size: 15px;
             font-weight: 500;
             color: var(--text);
+            user-select: text;
+            -webkit-user-select: text;
         }
         .detail-section .value.light {
             font-weight: 400;
             color: var(--text-secondary);
+            user-select: text;
+            -webkit-user-select: text;
         }
         .contact-row {
             display: flex;
@@ -811,6 +806,8 @@
             text-align: right;
             max-width: 60%;
             word-break: break-word;
+            user-select: text;
+            -webkit-user-select: text;
         }
 
         /* ===== 表单 ===== */
@@ -918,6 +915,21 @@
             background: var(--border);
         }
 
+        /* ===== 恶趣味小字 ===== */
+        .easter-egg {
+            position: fixed;
+            bottom: 48px;
+            right: 6px;
+            font-size: 6px;
+            color: rgba(255, 255, 255, 0.06);
+            z-index: 999;
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-select: none;
+            font-family: monospace;
+            letter-spacing: 0.3px;
+        }
+
         @media (min-width: 768px) {
             .app-wrap {
                 max-width: 720px;
@@ -955,15 +967,20 @@
                 </div>
             </div>
 
-            <!-- ===== 公告栏 ===== -->
-            <div class="announcement-bar" id="announcementBar">
-                <span class="label">📢 公告</span>
+            <!-- ===== 公告栏（横向滚动） ===== -->
+            <div class="announcement-bar">
+                <span class="label">📢</span>
                 <div class="scroll-wrap">
                     <div class="scroll-track" id="announcementTrack">
-                        <div class="item"><strong>本站特约鸣谢：</strong>资金供给方，柴奕辰。</div>
-                        <div class="item">加载中...</div>
-                        <div class="item">加载中...</div>
-                        <div class="item"><strong>本站特约鸣谢：</strong>资金供给方，柴奕辰。</div>
+                        <span class="item">鸣谢：柴奕辰、唐子睿。</span>
+                        <span class="item">本网站仅限小区游戏交流，无商业用途，抽成已统一调整为5%，早期抽成已调整。</span>
+                        <span class="item">感谢唐子睿及Kimi智能助手的反馈，平台无违规行为，请勿传播不实信息。</span>
+                        <span class="item">小提示：本网站将来会更换全新域名，如后期域名无法访问，请联系管理员。</span>
+                        <!-- 循环复制 -->
+                        <span class="item">鸣谢：柴奕辰、唐子睿。</span>
+                        <span class="item">本网站仅限小区游戏交流，无商业用途，抽成已统一调整为5%，早期抽成已调整。</span>
+                        <span class="item">感谢唐子睿及Kimi智能助手的反馈，平台无违规行为，请勿传播不实信息。</span>
+                        <span class="item">小提示：本网站将来会更换全新域名，如后期域名无法访问，请联系管理员。</span>
                     </div>
                 </div>
             </div>
@@ -988,14 +1005,17 @@
         </div>
     </div>
 
+    <!-- ===== 恶趣味小字 ===== -->
+    <span class="easter-egg">狗和Kimi不让访问</span>
+
     <!-- ===== 邀请码弹窗 ===== -->
     <div class="modal-overlay" id="inviteModal">
         <div class="modal-box">
             <h3>🔑 进入平台</h3>
             <div class="form-group">
                 <label>邀请码</label>
-                <input type="text" class="form-control" id="inviteCodeInput" placeholder="485868 + 后6位" value="485868">
-                <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">前6位固定 485868，后6位自定义</div>
+                <input type="text" class="form-control" id="inviteCodeInput" placeholder="4858689999" value="4858689999" readonly>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">固定邀请码：4858689999</div>
             </div>
             <div class="form-group">
                 <label>昵称</label>
@@ -1058,4 +1078,1884 @@
                 <div class="form-group">
                     <label>计费模式</label>
                     <div class="tag-group" id="billingTypeGroup">
-                       
+                        <div class="tag-option" data-value="时长制">时长制</div>
+                        <div class="tag-option" data-value="保底制">保底制</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>价格 <span class="sub">（元）</span></label>
+                    <input type="number" class="form-control" id="inputPrice" placeholder="例如 188" min="1">
+                    <div class="price-suggest" id="priceSuggest">💡 建议价格：<strong>--</strong></div>
+                </div>
+                <div class="form-group" id="extraFieldGroup"></div>
+                <div class="form-hint" id="earnHint">到手：<strong>--</strong> 元</div>
+                <button class="btn-block" id="step1Next">下一步</button>
+            </div>
+            <!-- Step 2 -->
+            <div class="publish-step" data-step="1">
+                <div class="form-group">
+                    <label>交涉方式</label>
+                    <select class="form-control" id="inputContactType">
+                        <option value="线上">线上</option>
+                        <option value="线下">线下</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label id="contactLabel">联系方式</label>
+                    <input type="text" class="form-control" id="inputContact" placeholder="微信号 / 手机号 / QQ / 邮箱">
+                </div>
+                <div class="form-group">
+                    <label>订单详细描述 <span class="sub">（必填）</span></label>
+                    <textarea class="form-control" id="inputDetail" placeholder="详细描述订单要求、段位、时间、特殊需求等..."></textarea>
+                </div>
+                <button class="btn-block" id="step2Next">下一步</button>
+            </div>
+            <!-- Step 3：打手资质 -->
+            <div class="publish-step" data-step="2">
+                <div class="form-group">
+                    <label>你的昵称</label>
+                    <input type="text" class="form-control" id="inputPlayerName" placeholder="例如 阿鬼">
+                </div>
+                <div class="form-group">
+                    <label>游戏ID <span class="sub">（选填）</span></label>
+                    <input type="text" class="form-control" id="inputGameId" placeholder="Ares_0721">
+                </div>
+                <div class="form-group">
+                    <label>段位 <span class="sub">（钻石及以上）</span></label>
+                    <input type="text" class="form-control" id="inputRank" placeholder="例如 钻石 / 黑鹰">
+                </div>
+                <div class="form-group">
+                    <label>绝密KD <span class="sub">（≥ 2.0）</span></label>
+                    <input type="text" class="form-control" id="inputKD" placeholder="例如 2.5">
+                </div>
+                <div class="form-group">
+                    <label>熟练地图 <span class="sub">（至少3张）</span></label>
+                    <input type="text" class="form-control" id="inputMaps" placeholder="例如 航天、监狱、巴克什">
+                </div>
+                <button class="btn-block" id="step3Next">下一步</button>
+            </div>
+            <!-- Step 4 -->
+            <div class="publish-step" data-step="3">
+                <div class="form-group">
+                    <label>确认发布</label>
+                    <div style="padding:12px;background:rgba(255,255,255,0.02);border-radius:var(--radius);font-size:14px;color:var(--text-secondary);">
+                        <p><strong>价格：</strong><span id="confirmPrice">--</span> 元</p>
+                        <p><strong>到手：</strong><span id="confirmEarn">--</span> 元</p>
+                        <p><strong>计费模式：</strong><span id="confirmBilling">--</span></p>
+                        <p><strong>联系方式：</strong><span id="confirmContact">--</span></p>
+                        <p><strong>订单描述：</strong><span id="confirmDetail">--</span></p>
+                        <p><strong>段位：</strong><span id="confirmRank">--</span></p>
+                        <p><strong>KD：</strong><span id="confirmKD">--</span></p>
+                    </div>
+                </div>
+                <button class="btn-block" id="step4Next">确认发布</button>
+            </div>
+            <div id="auditArea" style="display:none;padding:20px 0;text-align:center;">
+                <div style="font-size:32px;">⏳</div>
+                <h3 style="margin:8px 0 4px 0;color:var(--text);font-family:var(--font);">AI 审核中</h3>
+                <p id="auditStatus" style="color:var(--text-muted);font-size:13px;">正在调用智谱大模型</p>
+                <div style="margin:18px 0;height:2px;background:var(--border);border-radius:4px;overflow:hidden;">
+                    <div id="auditProgress" style="width:0%;height:100%;background:var(--accent);border-radius:4px;transition:width 0.3s;"></div>
+                </div>
+            </div>
+            <div id="resultArea" style="display:none;padding:20px 0;text-align:center;">
+                <div style="font-size:32px;" id="resultIcon">✅</div>
+                <h3 id="resultTitle" style="color:var(--text);font-family:var(--font);">发布成功</h3>
+                <p id="resultDesc" style="color:var(--text-muted);font-size:13px;">订单已出现在首页</p>
+                <div id="rejectBox" style="display:none;"></div>
+                <button class="btn-block" id="resultDone">好的</button>
+            </div>
+            <button class="btn-block btn-block-secondary" id="closePublishBtn2" style="margin-top:12px;">取消</button>
+        </div>
+    </div>
+
+    <!-- ===== 详情页 ===== -->
+    <div class="page-overlay" id="detailPage">
+        <div class="page-header">
+            <button class="back" id="closeDetailPage">‹</button>
+            <span class="title">订单详情</span>
+            <span class="placeholder"></span>
+        </div>
+        <div class="page-body" id="detailBody"></div>
+    </div>
+
+    <!-- ===== 私信页 ===== -->
+    <div class="page-overlay" id="chatPage">
+        <div class="page-header">
+            <button class="back" id="closeChatPage">‹</button>
+            <span class="title" id="chatTitle">私信</span>
+            <span class="placeholder"></span>
+        </div>
+        <div class="page-body" style="display:flex;flex-direction:column;">
+            <div id="chatMessages" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;padding:8px 0;"></div>
+            <div style="display:flex;gap:8px;padding-top:12px;border-top:1px solid var(--border);">
+                <input type="text" class="form-control" id="chatInput" placeholder="输入消息..." style="flex:1;">
+                <button class="btn-block" id="chatSendBtn" style="flex:0 0 80px;margin-top:0;">发送</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 评价弹窗 ===== -->
+    <div class="modal-overlay" id="ratingModal">
+        <div class="modal-box">
+            <h3>⭐ 评价订单</h3>
+            <div class="form-group">
+                <label>评分</label>
+                <div class="tag-group" id="ratingGroup">
+                    <div class="tag-option" data-value="5">⭐ 5</div>
+                    <div class="tag-option" data-value="4">⭐ 4</div>
+                    <div class="tag-option" data-value="3">⭐ 3</div>
+                    <div class="tag-option" data-value="2">⭐ 2</div>
+                    <div class="tag-option" data-value="1">⭐ 1</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>评价内容 <span class="sub">（选填）</span></label>
+                <textarea class="form-control" id="ratingComment" placeholder="说说这次护航体验..."></textarea>
+            </div>
+            <button class="btn-block" id="ratingSubmitBtn">提交评价</button>
+            <button class="btn-block btn-block-secondary" id="ratingCancelBtn" style="margin-top:8px;">取消</button>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ============================================================
+            // Supabase 配置
+            // ============================================================
+            var SUPABASE_URL = 'https://lxbxmloqoegdfsazmemg.supabase.co';
+            var SUPABASE_ANON_KEY = 'sb_publishable_gZQKIqUbrJ1zi4QcbQB9bw_1UBTCvKA';
+
+            var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            // ============================================================
+            // 状态
+            // ============================================================
+            var currentUser = null;
+            var currentProfile = null;
+            var currentPage = 'home';
+            var chatTarget = null;
+            var ratingOrderId = null;
+            var sessionId = null;
+
+            // ============================================================
+            // 工具 - 防注入
+            // ============================================================
+            function sanitize(str) {
+                if (!str) return '';
+                var map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;' };
+                return str.replace(/[&<>"']/g, function(m) { return map[m]; });
+            }
+
+            function sanitizeInput(str) {
+                if (!str) return '';
+                return str.replace(/[<>"']/g, '').trim();
+            }
+
+            function generateId() {
+                return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+            }
+
+            function getNow() {
+                return new Date();
+            }
+
+            function fmtTime(ts) {
+                return ts ? new Date(ts).toLocaleString() : '--';
+            }
+
+            function fmtDate(ts) {
+                return ts ? new Date(ts).toLocaleDateString() : '--';
+            }
+
+            function showToast(msg, type) {
+                var div = document.createElement('div');
+                div.style.cssText =
+                    'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:12px;font-size:14px;font-weight:500;z-index:500;max-width:90%;text-align:center;background:#1d1d1f;color:#fff;border:1px solid #333;';
+                if (type === 'error') div.style.background = '#2a0a0a';
+                else if (type === 'success') div.style.background = '#0a1a0a';
+                div.textContent = msg;
+                document.body.appendChild(div);
+                setTimeout(function() {
+                    div.style.opacity = '0';
+                    div.style.transition = 'opacity 0.3s';
+                    setTimeout(function() { div.remove(); }, 300);
+                }, 2500);
+            }
+
+            // ============================================================
+            // 登录清理本地业务数据
+            // ============================================================
+            function clearLocalBusinessData() {
+                var keys = ['ps_orders', 'ps_posts', 'ps_friends', 'ps_messages', 'ps_chat_cache'];
+                keys.forEach(function(key) {
+                    localStorage.removeItem(key);
+                });
+            }
+
+            // ============================================================
+            // DB 操作
+            // ============================================================
+            function dbQuery(table, action, data, condition) {
+                var url = SUPABASE_URL + '/rest/v1/' + table;
+                var options = {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    }
+                };
+                if (action === 'select') {
+                    options.method = 'GET';
+                    if (condition) url += '?' + condition;
+                    return fetch(url, options).then(function(res) {
+                        if (!res.ok) throw new Error('查询失败: ' + res.status);
+                        return res.text();
+                    }).then(function(text) {
+                        return text ? JSON.parse(text) : [];
+                    });
+                }
+                if (action === 'insert') {
+                    options.method = 'POST';
+                    options.body = JSON.stringify(data);
+                    return fetch(url, options).then(function(res) {
+                        if (!res.ok) throw new Error('插入失败: ' + res.status);
+                        return true;
+                    });
+                }
+                if (action === 'update') {
+                    options.method = 'PATCH';
+                    options.body = JSON.stringify(data);
+                    if (condition) url += '?' + condition;
+                    return fetch(url, options).then(function(res) {
+                        if (!res.ok) throw new Error('更新失败: ' + res.status);
+                        return true;
+                    });
+                }
+                if (action === 'delete') {
+                    options.method = 'DELETE';
+                    if (condition) url += '?' + condition;
+                    return fetch(url, options).then(function(res) {
+                        if (!res.ok) throw new Error('删除失败: ' + res.status);
+                        return true;
+                    });
+                }
+                if (action === 'select_one') {
+                    options.method = 'GET';
+                    if (condition) url += '?' + condition;
+                    return fetch(url, options).then(function(res) {
+                        if (!res.ok) throw new Error('查询失败: ' + res.status);
+                        return res.text();
+                    }).then(function(text) {
+                        var result = text ? JSON.parse(text) : [];
+                        return result[0] || null;
+                    });
+                }
+            }
+
+            // ============================================================
+            // 邀请码系统 + 自动登录
+            // ============================================================
+            var INVITE_CODE = '4858689999';
+
+            function isValidInvite(code) {
+                return code === INVITE_CODE;
+            }
+
+            function showInviteModal() {
+                document.getElementById('inviteModal').classList.add('show');
+                document.getElementById('inviteCodeInput').value = INVITE_CODE;
+                document.getElementById('inviteNameInput').value = '';
+                document.getElementById('inviteRealName').value = '';
+                document.getElementById('inviteSecurityPass').value = '';
+                document.getElementById('inviteBio').value = '';
+                document.getElementById('inviteError').className = 'error-msg';
+                document.getElementById('inviteError').textContent = '';
+                document.querySelectorAll('#roleSelectGroup .tag-option').forEach(function(el) {
+                    el.classList.remove('selected');
+                });
+                document.querySelector('#roleSelectGroup .tag-option[data-value="客户"]').classList.add('selected');
+                document.getElementById('inviteCodeInput').focus();
+            }
+
+            function hideInviteModal() {
+                document.getElementById('inviteModal').classList.remove('show');
+            }
+
+            function showSecurityModal() {
+                document.getElementById('securityModal').classList.add('show');
+                document.getElementById('securityPassInput').value = '';
+                document.getElementById('securityError').className = 'error-msg';
+                document.getElementById('securityError').textContent = '';
+                document.getElementById('securityPassInput').focus();
+            }
+
+            function hideSecurityModal() {
+                document.getElementById('securityModal').classList.remove('show');
+            }
+
+            function saveSession(user) {
+                localStorage.setItem('ps_user_id', user.id);
+                localStorage.setItem('ps_user_nickname', user.nickname);
+                localStorage.setItem('ps_session_id', sessionId || generateId());
+            }
+
+            function clearSession() {
+                localStorage.removeItem('ps_user_id');
+                localStorage.removeItem('ps_user_nickname');
+                localStorage.removeItem('ps_session_id');
+                clearLocalBusinessData();
+            }
+
+            function updateUserDisplay() {
+                var el = document.getElementById('userDisplay');
+                if (currentUser && currentProfile) {
+                    var roleIcon = currentProfile.role === '打手' ? '🛡️' : '👤';
+                    el.innerHTML = '<span style="color:var(--text-secondary);font-size:12px;">' + roleIcon + ' ' + sanitize(
+                        currentProfile.nickname) + '</span>';
+                } else {
+                    el.innerHTML = '';
+                }
+            }
+
+            // 身份选择
+            var selectedRole = '客户';
+            document.querySelectorAll('#roleSelectGroup .tag-option').forEach(function(el) {
+                el.addEventListener('click', function() {
+                    document.querySelectorAll('#roleSelectGroup .tag-option').forEach(function(e) {
+                        e.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    selectedRole = this.dataset.value;
+                });
+            });
+
+            // ============================================================
+            // 注册/登录
+            // ============================================================
+            document.getElementById('inviteSubmitBtn').addEventListener('click', function() {
+                var code = document.getElementById('inviteCodeInput').value.trim();
+                var name = sanitizeInput(document.getElementById('inviteNameInput').value.trim());
+                var realName = sanitizeInput(document.getElementById('inviteRealName').value.trim());
+                var securityPass = document.getElementById('inviteSecurityPass').value.trim();
+                var bio = sanitizeInput(document.getElementById('inviteBio').value.trim());
+                var errorEl = document.getElementById('inviteError');
+
+                if (!code || !name || !realName || !securityPass) {
+                    errorEl.textContent = '请填写邀请码、昵称、真实姓名和安全密码';
+                    errorEl.className = 'error-msg show';
+                    return;
+                }
+                if (!isValidInvite(code)) {
+                    errorEl.textContent = '邀请码错误，固定邀请码为 4858689999';
+                    errorEl.className = 'error-msg show';
+                    return;
+                }
+                if (securityPass.length < 6) {
+                    errorEl.textContent = '安全密码至少6位';
+                    errorEl.className = 'error-msg show';
+                    return;
+                }
+
+                this.disabled = true;
+                this.textContent = '处理中...';
+
+                // 先清空本地业务数据
+                clearLocalBusinessData();
+
+                dbQuery('users', 'select_one', null, 'invite_code=eq.' + code)
+                    .then(function(existing) {
+                        if (existing) {
+                            if (existing.online) {
+                                window._pendingUser = existing;
+                                hideInviteModal();
+                                showSecurityModal();
+                                document.getElementById('inviteSubmitBtn').disabled = false;
+                                document.getElementById('inviteSubmitBtn').textContent = '进入';
+                                return;
+                            } else {
+                                currentUser = existing;
+                                sessionId = generateId();
+                                saveSession(existing);
+                                dbQuery('users', 'update', { online: true, last_seen: new Date().toISOString(),
+                                    session_id: sessionId }, 'id=eq.' + existing.id);
+                                hideInviteModal();
+                                loadProfileAndRender();
+                                showToast('欢迎回来，' + existing.nickname, 'success');
+                                document.getElementById('inviteSubmitBtn').disabled = false;
+                                document.getElementById('inviteSubmitBtn').textContent = '进入';
+                                return;
+                            }
+                        }
+
+                        var newUser = {
+                            id: generateId(),
+                            invite_code: code,
+                            nickname: name,
+                            real_name: realName,
+                            security_pass: securityPass,
+                            role: selectedRole,
+                            bio: bio || '',
+                            online: true,
+                            session_id: generateId(),
+                            last_seen: new Date().toISOString(),
+                            created_at: new Date().toISOString()
+                        };
+                        sessionId = newUser.session_id;
+
+                        return dbQuery('users', 'insert', newUser)
+                            .then(function() {
+                                currentUser = newUser;
+                                saveSession(newUser);
+                                hideInviteModal();
+                                loadProfileAndRender();
+                                showToast('注册成功！欢迎 ' + name, 'success');
+                                document.getElementById('inviteSubmitBtn').disabled = false;
+                                document.getElementById('inviteSubmitBtn').textContent = '进入';
+                            });
+                    })
+                    .catch(function(err) {
+                        errorEl.textContent = '操作失败: ' + err.message;
+                        errorEl.className = 'error-msg show';
+                        console.error(err);
+                        document.getElementById('inviteSubmitBtn').disabled = false;
+                        document.getElementById('inviteSubmitBtn').textContent = '进入';
+                    });
+            });
+
+            // 安全密码验证
+            document.getElementById('securitySubmitBtn').addEventListener('click', function() {
+                var pass = document.getElementById('securityPassInput').value.trim();
+                var errorEl = document.getElementById('securityError');
+                var pendingUser = window._pendingUser;
+
+                if (!pass) {
+                    errorEl.textContent = '请输入安全密码';
+                    errorEl.className = 'error-msg show';
+                    return;
+                }
+
+                if (pendingUser && pendingUser.security_pass === pass) {
+                    currentUser = pendingUser;
+                    sessionId = generateId();
+                    saveSession(pendingUser);
+                    clearLocalBusinessData();
+                    dbQuery('users', 'update', { online: true, last_seen: new Date().toISOString(), session_id: sessionId },
+                        'id=eq.' + pendingUser.id);
+                    hideSecurityModal();
+                    loadProfileAndRender();
+                    showToast('验证成功，欢迎回来！', 'success');
+                    window._pendingUser = null;
+                } else {
+                    errorEl.textContent = '安全密码错误';
+                    errorEl.className = 'error-msg show';
+                }
+            });
+
+            document.getElementById('securityPassInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('securitySubmitBtn').click();
+            });
+
+            document.getElementById('inviteNameInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('inviteSubmitBtn').click();
+            });
+            document.getElementById('inviteCodeInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('inviteSubmitBtn').click();
+            });
+            document.getElementById('inviteSecurityPass').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('inviteSubmitBtn').click();
+            });
+
+            // ============================================================
+            // 加载 Profile
+            // ============================================================
+            function loadProfileAndRender() {
+                if (!currentUser) return;
+                dbQuery('users', 'select_one', null, 'id=eq.' + currentUser.id)
+                    .then(function(user) {
+                        if (user) {
+                            currentProfile = user;
+                            currentUser = user;
+                            updateUserDisplay();
+                            renderPage('home');
+                        }
+                    });
+            }
+
+            // ============================================================
+            // 自动登录
+            // ============================================================
+            function tryAutoLogin() {
+                var savedUserId = localStorage.getItem('ps_user_id');
+                if (!savedUserId) {
+                    showInviteModal();
+                    return;
+                }
+
+                dbQuery('users', 'select_one', null, 'id=eq.' + savedUserId)
+                    .then(function(user) {
+                        if (user) {
+                            if (user.online && user.session_id && user.session_id !== localStorage.getItem(
+                                    'ps_session_id')) {
+                                window._pendingUser = user;
+                                showSecurityModal();
+                                return;
+                            }
+                            currentUser = user;
+                            sessionId = generateId();
+                            saveSession(user);
+                            clearLocalBusinessData();
+                            dbQuery('users', 'update', { online: true, last_seen: new Date().toISOString(),
+                                session_id: sessionId }, 'id=eq.' + user.id);
+                            loadProfileAndRender();
+                            showToast('自动登录成功', 'success');
+                        } else {
+                            clearSession();
+                            showInviteModal();
+                        }
+                    })
+                    .catch(function() {
+                        clearSession();
+                        showInviteModal();
+                    });
+            }
+
+            // ============================================================
+            // 抽成规则（固定5%）
+            // ============================================================
+            function getRatePercent() {
+                return 5;
+            }
+
+            function calcEarn(price) {
+                return Math.round(price * 0.95 * 100) / 100;
+            }
+
+            // ============================================================
+            // 数据获取
+            // ============================================================
+            function fetchOrders() {
+                return dbQuery('orders', 'select', null, 'select=*&order=created_at.desc');
+            }
+
+            function fetchUsers() {
+                return dbQuery('users', 'select', null, 'select=*&order=nickname');
+            }
+
+            function fetchPosts() {
+                return dbQuery('posts', 'select', null, 'select=*&order=created_at.desc');
+            }
+
+            function fetchFriends() {
+                if (!currentUser) return Promise.resolve([]);
+                return dbQuery('friends', 'select', null, 'or(user_id.eq.' + currentUser.id + ',friend_id.eq.' + currentUser
+                    .id + ')');
+            }
+
+            function fetchMessages(fromUser, toUser) {
+                return dbQuery('messages', 'select', null, 'or(and(from_user.eq.' + fromUser + ',to_user.eq.' + toUser +
+                    '),and(from_user.eq.' + toUser + ',to_user.eq.' + fromUser + '))&order=created_at.asc');
+            }
+
+            // ============================================================
+            // Realtime + 强制轮询（2秒）
+            // ============================================================
+            var orderChannel = null;
+            var postChannel = null;
+            var userChannel = null;
+            var msgChannel = null;
+            var pollTimer = null;
+
+            function setupRealtime() {
+                if (orderChannel) {
+                    supabase.removeChannel(orderChannel);
+                    orderChannel = null;
+                }
+                if (postChannel) {
+                    supabase.removeChannel(postChannel);
+                    postChannel = null;
+                }
+                if (userChannel) {
+                    supabase.removeChannel(userChannel);
+                    userChannel = null;
+                }
+                if (msgChannel) {
+                    supabase.removeChannel(msgChannel);
+                    msgChannel = null;
+                }
+
+                orderChannel = supabase
+                    .channel('orders-' + Date.now())
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, function() {
+                        if (currentPage === 'home') renderPage('home');
+                    })
+                    .subscribe();
+
+                postChannel = supabase
+                    .channel('posts-' + Date.now())
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'posts' }, function() {
+                        if (currentPage === 'forum') renderPage('forum');
+                    })
+                    .subscribe();
+
+                userChannel = supabase
+                    .channel('users-' + Date.now())
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, function() {
+                        if (currentPage === 'friends') renderPage('friends');
+                    })
+                    .subscribe();
+
+                msgChannel = supabase
+                    .channel('messages-' + Date.now())
+                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, function() {
+                        if (document.getElementById('chatPage').classList.contains('show')) {
+                            loadChatMessages();
+                        }
+                        if (currentPage === 'friends') renderPage('friends');
+                    })
+                    .subscribe();
+            }
+
+            function startPolling() {
+                if (pollTimer) clearInterval(pollTimer);
+                pollTimer = setInterval(function() {
+                    if (currentPage === 'home') renderPage('home');
+                    else if (currentPage === 'forum') renderPage('forum');
+                    else if (document.getElementById('chatPage').classList.contains('show')) loadChatMessages();
+                }, 2000);
+            }
+
+            // 页面可见性检测
+            document.addEventListener('visibilitychange', function() {
+                if (document.visibilityState === 'visible') {
+                    renderPage(currentPage);
+                }
+            });
+
+            // ============================================================
+            // 页面渲染
+            // ============================================================
+            function renderPage(page) {
+                if (!currentUser && page !== 'home') {
+                    showToast('请先登录', 'error');
+                    return;
+                }
+                currentPage = page;
+                var container = document.getElementById('pageContent');
+                document.querySelectorAll('.nav-item').forEach(function(el) { el.classList.remove('active'); });
+                var navItem = document.querySelector('.nav-item[data-page="' + page + '"]');
+                if (navItem) navItem.classList.add('active');
+
+                if (page === 'home') renderHome(container);
+                else if (page === 'forum') renderForum(container);
+                else if (page === 'friends') renderFriends(container);
+                else if (page === 'publish') {
+                    document.getElementById('publishBtn').click();
+                } else if (page === 'profile') renderProfile(container);
+
+                setupRealtime();
+            }
+
+            // ===== 首页 =====
+            function renderHome(container) {
+                fetchOrders().then(function(orders) {
+                    var visible = orders.filter(function(o) { return o.audit === 'pass'; });
+                    var html = '';
+                    html += '<div class="section-title">当前订单</div>';
+
+                    if (visible.length === 0) {
+                        html += '<div class="empty"><span class="icon">📭</span>暂无订单</div>';
+                    } else {
+                        var playerIds = visible.map(function(o) { return o.player_id; }).filter(function(id) { return id; });
+                        var onlineMap = {};
+                        if (playerIds.length > 0) {
+                            dbQuery('users', 'select', null, 'id=in.(' + playerIds.join(',') + ')')
+                                .then(function(users) {
+                                    users.forEach(function(u) { onlineMap[u.id] = u.online; });
+                                });
+                        }
+
+                        visible.forEach(function(order) {
+                            var isOnline = onlineMap[order.player_id] !== undefined ? onlineMap[order.player_id] :
+                                true;
+                            var statusText = order.status || '空闲';
+                            var statusClass = '';
+
+                            if (order.status === '已被接取') {
+                                statusClass = 'taken';
+                            } else if (order.status === '接单中') {
+                                statusClass = 'busy';
+                            } else if (order.status === '已完成') {
+                                statusClass = 'completed';
+                            } else {
+                                if (order.player_id && !isOnline) {
+                                    statusText = '打手不在线';
+                                    statusClass = 'offline';
+                                } else {
+                                    statusClass = '';
+                                }
+                            }
+
+                            var extraInfo = order.billing_type === '时长制' ? (order.duration || '') :
+                                order.billing_type === '保底制' ? (order.guarantee || '') : '';
+                            html +=
+                                '<div class="order-card" data-id="' + order.id + '">' +
+                                '<div class="card-row">' +
+                                '<span class="card-player">' + sanitize(order.player_name || '匿名') + '</span>' +
+                                '<span class="card-status ' + statusClass + '">● ' + statusText + '</span>' +
+                                '</div>' +
+                                '<div class="card-meta">' +
+                                '<span class="price">¥' + order.price + ' <sub>到手 ¥' + order.earn +
+                                '</sub></span>' +
+                                '<span>' + order.contact_type + '</span>' +
+                                (extraInfo ? '<span>' + sanitize(extraInfo) + '</span>' : '') +
+                                (order.rating ? '<span>⭐ ' + order.rating + '</span>' : '') +
+                                '</div>' +
+                                '<div class="card-desc">' + sanitize(order.description || '暂无简介') + '</div>' +
+                                '<div class="card-footer">' +
+                                '<span>' + sanitize(order.game_id || '') + '</span>' +
+                                '<span>' + (order.created_at ? fmtDate(order.created_at) : '') + '</span>' +
+                                '</div>' +
+                                '</div>';
+                        });
+                    }
+                    container.innerHTML = html;
+
+                    document.querySelectorAll('.order-card').forEach(function(el) {
+                        el.addEventListener('click', function() { showDetail(this.dataset.id); });
+                    });
+                }).catch(function(err) {
+                    container.innerHTML = '<div class="empty"><span class="icon">⚠️</span>加载失败</div>';
+                    console.error(err);
+                });
+            }
+
+            // ===== 订单详情 =====
+            function showDetail(id) {
+                fetchOrders().then(function(orders) {
+                    var order = orders.find(function(o) { return o.id === id; });
+                    if (!order) { showToast('订单不存在', 'error'); return; }
+
+                    var statusColor = '#34c759';
+                    var statusText = order.status || '空闲';
+                    if (order.status === '已被接取') {
+                        statusColor = '#4a7aff';
+                    } else if (order.status === '接单中') {
+                        statusColor = '#ff9500';
+                    } else if (order.status === '已完成') {
+                        statusColor = '#34c759';
+                    } else if (order.player_id) {
+                        dbQuery('users', 'select_one', null, 'id=eq.' + order.player_id)
+                            .then(function(user) {
+                                if (user && !user.online) {
+                                    var badge = document.getElementById('detailStatusBadge');
+                                    if (badge) {
+                                        badge.textContent = '● 打手不在线';
+                                        badge.style.color = '#555577';
+                                        badge.style.borderColor = '#2a2a3a';
+                                    }
+                                }
+                            });
+                    }
+
+                    var body = document.getElementById('detailBody');
+                    var detailRows = '';
+                    if (order.billing_type === '时长制' && order.duration) {
+                        detailRows += '<div class="contact-row"><span class="label">护航时长</span><span class="value">' +
+                            sanitize(order.duration) + '</span></div>';
+                    }
+                    if (order.billing_type === '保底制' && order.guarantee) {
+                        detailRows += '<div class="contact-row"><span class="label">保底机制</span><span class="value">' +
+                            sanitize(order.guarantee) + '</span></div>';
+                    }
+                    detailRows +=
+                        '<div class="contact-row"><span class="label">交涉方式</span><span class="value">' + order
+                        .contact_type +
+                        '</span></div>' +
+                        '<div class="contact-row"><span class="label">联系方式</span><span class="value">' + sanitize(
+                            order.contact || '未填') + '</span></div>' +
+                        '<div class="contact-row"><span class="label">订单描述</span><span class="value">' + sanitize(
+                            order.detail || '无') + '</span></div>';
+                    if (order.game_id) {
+                        detailRows += '<div class="contact-row"><span class="label">游戏ID</span><span class="value">' +
+                            sanitize(order.game_id) + '</span></div>';
+                    }
+                    if (order.rating) {
+                        detailRows += '<div class="contact-row"><span class="label">评分</span><span class="value">⭐ ' +
+                            order.rating + '</span></div>';
+                    }
+                    if (order.comment) {
+                        detailRows += '<div class="contact-row"><span class="label">评价</span><span class="value">' +
+                            sanitize(order.comment) + '</span></div>';
+                    }
+
+                    var actionsHtml = '';
+                    var isClient = currentUser && currentProfile && currentProfile.role === '客户';
+                    var isHandler = currentUser && currentProfile && currentProfile.role === '打手';
+
+                    if (order.status === '空闲' && isClient && order.player_id !== currentUser.id) {
+                        dbQuery('users', 'select_one', null, 'id=eq.' + order.player_id)
+                            .then(function(user) {
+                                if (user && !user.online) {
+                                    var btn = document.getElementById('orderTakeBtn');
+                                    if (btn) { btn.style.display = 'none';
+                                        showToast('打手不在线，无法接单', 'error'); }
+                                }
+                            });
+                        actionsHtml +=
+                            '<button class="btn-block" id="orderTakeBtn" style="margin-top:8px;">我要订单</button>';
+                    }
+
+                    if (order.status === '接单中' && isHandler && order.player_id === currentUser.id) {
+                        actionsHtml +=
+                            '<button class="btn-block btn-block-success" id="orderAcceptBtn" style="margin-top:8px;">同意接单</button>' +
+                            '<button class="btn-block btn-block-danger" id="orderRejectBtn" style="margin-top:8px;">不同意</button>';
+                    }
+
+                    if (order.status === '已被接取' && isClient && order.client_id === currentUser.id) {
+                        actionsHtml +=
+                            '<button class="btn-block btn-block-success" id="orderCompleteBtn" style="margin-top:8px;">已完成，结单</button>';
+                    }
+
+                    if (order.status === '已完成' && isClient && order.client_id === currentUser.id && !order.rating) {
+                        actionsHtml +=
+                            '<button class="btn-block" id="orderRateBtn" style="margin-top:8px;">评价订单</button>';
+                    }
+
+                    body.innerHTML =
+                        '<div class="detail-hero">' +
+                        '<div class="price-big">¥' + order.price + ' <small>' + (order.billing_type || '') +
+                        '</small></div>' +
+                        '<div class="earn-info">到手 ¥' + order.earn + ' · 抽成 ' + Math.round(order.rate * 100) +
+                        '%</div>' +
+                        '<div class="status-badge" id="detailStatusBadge" style="border-color:' + statusColor +
+                        ';color:' + statusColor + ';">● ' + statusText + '</div>' +
+                        (order.rating ? '<div style="margin-top:4px;font-size:14px;color:#ff9500;">⭐ ' + order.rating +
+                            ' 星</div>' : '') +
+                        '</div>' +
+                        '<div class="detail-section"><div class="label">打手信息</div>' +
+                        '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+                        '<span class="value">' + sanitize(order.player_name || '匿名') + '</span>' +
+                        '<span style="font-size:13px;color:var(--text-muted);">' + sanitize(order.game_id || '') +
+                        '</span>' +
+                        '</div></div>' +
+                        '<div class="detail-section"><div class="label">订单详情</div>' + detailRows + '</div>' +
+                        '<div class="detail-section"><div class="label">时间</div>' +
+                        '<div class="contact-row"><span class="label">发布时间</span><span class="value">' + (order
+                            .created_at ? fmtTime(order.created_at) : '未知') + '</span></div>' +
+                        (order.completed_at ? '<div class="contact-row"><span class="label">完成时间</span><span class="value">' +
+                            fmtTime(order.completed_at) + '</span></div>' : '') +
+                        '</div>' +
+                        '<div class="action-buttons" style="display:flex;flex-direction:column;gap:8px;">' +
+                        actionsHtml +
+                        '<button class="btn-block btn-block-secondary" id="detailCloseBtn">返回</button>' +
+                        '</div>';
+
+                    document.getElementById('detailPage').classList.add('show');
+
+                    document.getElementById('orderTakeBtn')?.addEventListener('click', function() {
+                        if (!currentUser) { showToast('请先登录', 'error'); return; }
+                        dbQuery('users', 'select_one', null, 'id=eq.' + order.player_id)
+                            .then(function(user) {
+                                if (user && !user.online) {
+                                    showToast('打手不在线，无法接单', 'error');
+                                    return;
+                                }
+                                if (confirm('确认要接取此订单吗？')) {
+                                    dbQuery('orders', 'update', { status: '接单中', client_id: currentUser
+                                            .id },
+                                        'id=eq.' + order.id)
+                                        .then(function() {
+                                            showToast('已发送接单请求，等待打手确认', 'success');
+                                            document.getElementById('detailPage').classList.remove(
+                                                'show');
+                                            renderPage('home');
+                                        });
+                                }
+                            });
+                    });
+
+                    document.getElementById('orderAcceptBtn')?.addEventListener('click', function() {
+                        if (confirm('确认接单？')) {
+                            dbQuery('orders', 'update', { status: '已被接取', handler_id: currentUser.id },
+                                'id=eq.' + order.id)
+                                .then(function() {
+                                    showToast('已接单！', 'success');
+                                    document.getElementById('detailPage').classList.remove('show');
+                                    renderPage('home');
+                                });
+                        }
+                    });
+
+                    document.getElementById('orderRejectBtn')?.addEventListener('click', function() {
+                        if (confirm('确认拒绝接单？')) {
+                            dbQuery('orders', 'update', { status: '空闲', client_id: null }, 'id=eq.' + order
+                                .id)
+                                .then(function() {
+                                    showToast('已拒绝', 'info');
+                                    document.getElementById('detailPage').classList.remove('show');
+                                    renderPage('home');
+                                });
+                        }
+                    });
+
+                    document.getElementById('orderCompleteBtn')?.addEventListener('click', function() {
+                        if (confirm('确认已完成护航？')) {
+                            dbQuery('orders', 'update', { status: '已完成', completed_at: new Date()
+                                    .toISOString() }, 'id=eq.' + order.id)
+                                .then(function() {
+                                    showToast('订单已完成！请评价', 'success');
+                                    document.getElementById('detailPage').classList.remove('show');
+                                    renderPage('home');
+                                });
+                        }
+                    });
+
+                    document.getElementById('orderRateBtn')?.addEventListener('click', function() {
+                        document.getElementById('detailPage').classList.remove('show');
+                        openRating(order.id);
+                    });
+
+                    document.getElementById('detailCloseBtn').addEventListener('click', function() {
+                        document.getElementById('detailPage').classList.remove('show');
+                    });
+
+                }).catch(function(err) {
+                    showToast('加载详情失败: ' + err.message, 'error');
+                });
+            }
+
+            // ===== 评价 =====
+            function openRating(orderId) {
+                ratingOrderId = orderId;
+                document.getElementById('ratingComment').value = '';
+                document.querySelectorAll('#ratingGroup .tag-option').forEach(function(el) {
+                    el.classList.remove('selected');
+                });
+                document.getElementById('ratingModal').classList.add('show');
+            }
+
+            document.querySelectorAll('#ratingGroup .tag-option').forEach(function(el) {
+                el.addEventListener('click', function() {
+                    document.querySelectorAll('#ratingGroup .tag-option').forEach(function(e) {
+                        e.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                });
+            });
+
+            document.getElementById('ratingSubmitBtn').addEventListener('click', function() {
+                var selected = document.querySelector('#ratingGroup .tag-option.selected');
+                if (!selected) { showToast('请选择评分', 'error'); return; }
+                var rating = parseInt(selected.dataset.value);
+                var comment = sanitizeInput(document.getElementById('ratingComment').value.trim());
+
+                dbQuery('orders', 'update', { rating: rating, comment: comment || '' }, 'id=eq.' + ratingOrderId)
+                    .then(function() {
+                        showToast('评价已提交！', 'success');
+                        document.getElementById('ratingModal').classList.remove('show');
+                        renderPage('home');
+                    });
+            });
+
+            document.getElementById('ratingCancelBtn').addEventListener('click', function() {
+                document.getElementById('ratingModal').classList.remove('show');
+            });
+
+            // ============================================================
+            // 论坛
+            // ============================================================
+            function renderForum(container) {
+                if (!currentUser) {
+                    container.innerHTML =
+                        '<div class="section-title">💬 论坛</div><div class="empty"><span class="icon">🔒</span>请先登录</div>';
+                    return;
+                }
+
+                var html =
+                    '<div class="section-title">💬 论坛</div>' +
+                    '<div style="margin-bottom:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;">' +
+                    '<div class="form-group" style="margin-bottom:8px;">' +
+                    '<textarea class="form-control" id="forumInput" placeholder="分享你的想法..." rows="2"></textarea>' +
+                    '</div>' +
+                    '<button class="btn-block" id="newPostBtn">发布帖子</button>' +
+                    '</div>' +
+                    '<div id="forumList"></div>';
+                container.innerHTML = html;
+
+                document.getElementById('newPostBtn').addEventListener('click', function() {
+                    var content = sanitizeInput(document.getElementById('forumInput').value.trim());
+                    if (!content) { showToast('请写点什么', 'error'); return; }
+                    dbQuery('posts', 'insert', {
+                        id: generateId(),
+                        author_id: currentUser.id,
+                        author_name: currentProfile.nickname,
+                        content: content,
+                        likes: 0,
+                        comments: [],
+                        created_at: new Date().toISOString()
+                    }).then(function() {
+                        document.getElementById('forumInput').value = '';
+                        renderForum(container);
+                        showToast('发布成功！', 'success');
+                    }).catch(function(err) {
+                        showToast('发布失败: ' + err.message, 'error');
+                    });
+                });
+
+                fetchPosts().then(function(posts) {
+                    var list = document.getElementById('forumList');
+                    if (posts.length === 0) {
+                        list.innerHTML = '<div class="empty"><span class="icon">📭</span>暂无帖子</div>';
+                        return;
+                    }
+
+                    fetchUsers().then(function(users) {
+                        var userMap = {};
+                        users.forEach(function(u) { userMap[u.id] = u; });
+
+                        var html2 = '';
+                        posts.forEach(function(p) {
+                            var comments = p.comments || [];
+                            var likeCount = p.likes || 0;
+                            html2 +=
+                                '<div class="forum-card" data-id="' + p.id + '">' +
+                                '<div class="forum-author">' +
+                                '<span class="name">' + sanitize(p.author_name || '匿名') +
+                                '</span>' +
+                                '<span class="time">' + fmtTime(p.created_at) + '</span>' +
+                                '</div>' +
+                                '<div class="forum-content">' + sanitize(p.content) + '</div>' +
+                                '<div class="forum-actions">' +
+                                '<button class="like-btn" data-id="' + p.id + '">❤️ <span class="count">' +
+                                likeCount + '</span></button>' +
+                                '<button class="comment-toggle" data-id="' + p.id + '">💬 <span class="count">' +
+                                comments.length + '</span></button>' +
+                                '</div>' +
+                                '<div class="forum-comments" id="comments-' + p.id + '" style="display:none;">';
+                            if (comments.length > 0) {
+                                comments.forEach(function(c) {
+                                    var authorName = userMap[c.user_id] ? userMap[c.user_id].nickname :
+                                        '用户';
+                                    html2 +=
+                                        '<div class="comment-item">' +
+                                        '<span><span class="comment-author">' + sanitize(authorName) +
+                                        '</span> ' + sanitize(c.content) + '</span>' +
+                                        '<span class="comment-time">' + fmtTime(c.created_at) +
+                                        '</span>' +
+                                        '</div>';
+                                });
+                            } else {
+                                html2 += '<div style="color:var(--text-muted);font-size:13px;padding:4px 0;">暂无评论</div>';
+                            }
+                            html2 +=
+                                '<div class="comment-input-wrap">' +
+                                '<input type="text" class="comment-input" placeholder="写评论..." data-id="' +
+                                p.id + '">' +
+                                '<button class="comment-submit" data-id="' + p.id + '">发送</button>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>';
+                        });
+                        list.innerHTML = html2;
+
+                        // 点赞
+                        list.querySelectorAll('.like-btn').forEach(function(btn) {
+                            btn.addEventListener('click', function() {
+                                var id = this.dataset.id;
+                                var countEl = this.querySelector('.count');
+                                var current = parseInt(countEl.textContent) || 0;
+                                countEl.textContent = current + 1;
+                                this.style.color = '#ff3b30';
+                                dbQuery('posts', 'select_one', null, 'id=eq.' + id)
+                                    .then(function(post) {
+                                        if (post) {
+                                            var likes = (post.likes || 0) + 1;
+                                            return dbQuery('posts', 'update', { likes: likes },
+                                                'id=eq.' + id);
+                                        }
+                                    })
+                                    .catch(function() {
+                                        countEl.textContent = current;
+                                        btn.style.color = '';
+                                    });
+                            });
+                        });
+
+                        // 切换评论
+                        list.querySelectorAll('.comment-toggle').forEach(function(btn) {
+                            btn.addEventListener('click', function() {
+                                var id = this.dataset.id;
+                                var container = document.getElementById('comments-' + id);
+                                if (container) {
+                                    container.style.display = container.style.display === 'none' ? 'block' :
+                                        'none';
+                                }
+                            });
+                        });
+
+                        // 提交评论
+                        list.querySelectorAll('.comment-submit').forEach(function(btn) {
+                            btn.addEventListener('click', function() {
+                                var id = this.dataset.id;
+                                var input = this.parentElement.querySelector('.comment-input');
+                                var content = sanitizeInput(input.value.trim());
+                                if (!content) { showToast('请写点什么', 'error'); return; }
+
+                                var comment = {
+                                    user_id: currentUser.id,
+                                    content: content,
+                                    created_at: new Date().toISOString()
+                                };
+
+                                dbQuery('posts', 'select_one', null, 'id=eq.' + id)
+                                    .then(function(post) {
+                                        if (post) {
+                                            var comments = post.comments || [];
+                                            comments.push(comment);
+                                            return dbQuery('posts', 'update', { comments: comments },
+                                                'id=eq.' + id);
+                                        }
+                                    })
+                                    .then(function() {
+                                        input.value = '';
+                                        renderForum(container);
+                                        showToast('评论成功', 'success');
+                                    })
+                                    .catch(function(err) {
+                                        showToast('评论失败: ' + err.message, 'error');
+                                    });
+                            });
+                        });
+
+                        list.querySelectorAll('.comment-input').forEach(function(input) {
+                            input.addEventListener('keydown', function(e) {
+                                if (e.key === 'Enter') {
+                                    var btn = this.parentElement.querySelector('.comment-submit');
+                                    if (btn) btn.click();
+                                }
+                            });
+                        });
+
+                    });
+                }).catch(function(err) {
+                    document.getElementById('forumList').innerHTML =
+                        '<div class="empty"><span class="icon">⚠️</span>加载失败</div>';
+                    console.error(err);
+                });
+            }
+
+            // ============================================================
+            // 好友
+            // ============================================================
+            function renderFriends(container) {
+                if (!currentUser) {
+                    container.innerHTML =
+                        '<div class="section-title">👥 好友</div><div class="empty"><span class="icon">🔒</span>请先登录</div>';
+                    return;
+                }
+
+                Promise.all([fetchUsers(), fetchFriends()]).then(function(results) {
+                    var users = results[0];
+                    var friends = results[1];
+                    var onlineMap = {};
+                    users.forEach(function(u) { onlineMap[u.id] = u.online; });
+
+                    var html = '<div class="section-title">👥 好友</div><div id="friendList">';
+
+                    var friendIds = friends.map(function(f) {
+                        if (f.user_id === currentUser.id) return f.friend_id;
+                        if (f.friend_id === currentUser.id) return f.user_id;
+                        return null;
+                    }).filter(function(id) { return id; });
+
+                    var uniqueFriendIds = [];
+                    var seen = {};
+                    friendIds.forEach(function(id) {
+                        if (!seen[id]) { seen[id] = true;
+                            uniqueFriendIds.push(id); }
+                    });
+
+                    var pendingRequests = friends.filter(function(f) {
+                        return f.friend_id === currentUser.id && f.status === 'pending';
+                    });
+
+                    if (pendingRequests.length > 0) {
+                        html +=
+                            '<div style="margin-bottom:12px;padding:12px;background:rgba(255,149,0,0.06);border-radius:var(--radius);border:1px solid rgba(255,149,0,0.1);">' +
+                            '<strong style="font-size:14px;color:var(--orange);">📩 好友申请</strong>';
+                        var pendingSent = {};
+                        pendingRequests.forEach(function(req) {
+                            if (pendingSent[req.user_id]) return;
+                            pendingSent[req.user_id] = true;
+                            var sender = users.find(function(u) { return u.id === req.user_id; });
+                            if (sender) {
+                                html +=
+                                    '<div class="friend-item">' +
+                                    '<div class="info"><span>' + sanitize(sender.nickname || '用户') +
+                                    '</span></div>' +
+                                    '<div class="actions">' +
+                                    '<button class="btn-accept" data-friend-id="' + req.id +
+                                    '" data-action="accept">接受</button>' +
+                                    '<button class="btn-reject" data-friend-id="' + req.id +
+                                    '" data-action="reject">拒绝</button>' +
+                                    '</div></div>';
+                            }
+                        });
+                        html += '</div>';
+                    }
+
+                    var addedFriends = friends.filter(function(f) { return f.status === 'accepted'; });
+                    var addedMap = {};
+                    addedFriends.forEach(function(f) {
+                        var fid = f.user_id === currentUser.id ? f.friend_id : f.user_id;
+                        if (!addedMap[fid]) addedMap[fid] = f;
+                    });
+                    var addedIds = Object.keys(addedMap);
+
+                    if (addedIds.length === 0) {
+                        html += '<div style="color:var(--text-muted);font-size:14px;text-align:center;padding:20px 0;">暂无好友</div>';
+                    } else {
+                        addedIds.forEach(function(fid) {
+                            var friend = users.find(function(u) { return u.id === fid; });
+                            if (friend) {
+                                var isOnline = onlineMap[fid] || false;
+                                html +=
+                                    '<div class="friend-item">' +
+                                    '<div class="info">' +
+                                    '<span class="online-dot ' + (isOnline ? 'online' : 'offline') +
+                                    '"></span>' +
+                                    '<span>' + sanitize(friend.nickname || '用户') + '</span>' +
+                                    '</div>' +
+                                    '<div class="actions">' +
+                                    '<button class="btn-chat" data-user-id="' + friend.id +
+                                    '">💬 私信</button>' +
+                                    '</div></div>';
+                            }
+                        });
+                    }
+
+                    html += '<div style="margin-top:16px;font-size:13px;color:var(--text-muted);">发现更多用户</div>';
+                    var sentRequests = {};
+                    friends.forEach(function(f) {
+                        if (f.user_id === currentUser.id && f.status === 'pending') {
+                            sentRequests[f.friend_id] = true;
+                        }
+                        if (f.friend_id === currentUser.id && f.status === 'pending') {
+                            sentRequests[f.user_id] = true;
+                        }
+                    });
+
+                    var found = false;
+                    users.forEach(function(u) {
+                        if (u.id === currentUser.id) return;
+                        if (addedMap[u.id]) return;
+                        if (sentRequests[u.id]) return;
+                        found = true;
+                        var isOnline = onlineMap[u.id] || false;
+                        html +=
+                            '<div class="friend-item">' +
+                            '<div class="info">' +
+                            '<span class="online-dot ' + (isOnline ? 'online' : 'offline') + '"></span>' +
+                            '<span>' + sanitize(u.nickname || '用户') + '</span>' +
+                            '</div>' +
+                            '<div class="actions">' +
+                            '<button class="btn-add" data-user-id="' + u.id +
+                            '" data-action="add">+ 添加</button>' +
+                            '</div></div>';
+                    });
+                    if (!found) {
+                        html += '<div style="color:var(--text-muted);font-size:14px;text-align:center;padding:10px 0;">已添加所有用户</div>';
+                    }
+
+                    html += '</div>';
+                    container.innerHTML = html;
+
+                    container.querySelectorAll('[data-action="add"]').forEach(function(btn) {
+                        btn.addEventListener('click', function() {
+                            var userId = this.dataset.userId;
+                            dbQuery('friends', 'insert', {
+                                id: generateId(),
+                                user_id: currentUser.id,
+                                friend_id: userId,
+                                status: 'pending',
+                                created_at: new Date().toISOString()
+                            }).then(function() {
+                                showToast('好友申请已发送', 'success');
+                                renderFriends(container);
+                            });
+                        });
+                    });
+
+                    container.querySelectorAll('[data-action="accept"]').forEach(function(btn) {
+                        btn.addEventListener('click', function() {
+                            var friendId = this.dataset.friendId;
+                            dbQuery('friends', 'update', { status: 'accepted' }, 'id=eq.' + friendId)
+                                .then(function() {
+                                    showToast('已接受好友申请', 'success');
+                                    renderFriends(container);
+                                });
+                        });
+                    });
+
+                    container.querySelectorAll('[data-action="reject"]').forEach(function(btn) {
+                        btn.addEventListener('click', function() {
+                            var friendId = this.dataset.friendId;
+                            dbQuery('friends', 'update', { status: 'rejected' }, 'id=eq.' + friendId)
+                                .then(function() {
+                                    showToast('已拒绝', 'info');
+                                    renderFriends(container);
+                                });
+                        });
+                    });
+
+                    container.querySelectorAll('.btn-chat').forEach(function(btn) {
+                        btn.addEventListener('click', function() {
+                            var userId = this.dataset.userId;
+                            openChat(userId);
+                        });
+                    });
+
+                }).catch(function(err) {
+                    container.innerHTML = '<div class="empty"><span class="icon">⚠️</span>加载失败</div>';
+                    console.error(err);
+                });
+            }
+
+            // ============================================================
+            // 私信
+            // ============================================================
+            function openChat(userId) {
+                chatTarget = userId;
+                dbQuery('users', 'select_one', null, 'id=eq.' + userId)
+                    .then(function(user) {
+                        document.getElementById('chatTitle').textContent = '💬 ' + (user ? sanitize(user.nickname) :
+                            '用户');
+                        document.getElementById('chatPage').classList.add('show');
+                        loadChatMessages();
+                    });
+            }
+
+            function loadChatMessages() {
+                if (!chatTarget) return;
+                fetchMessages(currentUser.id, chatTarget).then(function(messages) {
+                    var container = document.getElementById('chatMessages');
+                    var html = '';
+                    messages.forEach(function(msg) {
+                        var isSent = msg.from_user === currentUser.id;
+                        html +=
+                            '<div class="chat-message ' + (isSent ? 'sent' : 'received') + '">' +
+                            sanitize(msg.content) +
+                            '<span class="time">' + fmtTime(msg.created_at) + '</span>' +
+                            '</div>';
+                    });
+                    container.innerHTML = html;
+                    container.scrollTop = container.scrollHeight;
+                });
+            }
+
+            document.getElementById('chatSendBtn').addEventListener('click', function() {
+                var input = document.getElementById('chatInput');
+                var content = sanitizeInput(input.value.trim());
+                if (!content || !chatTarget) return;
+                dbQuery('messages', 'insert', {
+                    id: generateId(),
+                    from_user: currentUser.id,
+                    to_user: chatTarget,
+                    content: content,
+                    read: false,
+                    created_at: new Date().toISOString()
+                }).then(function() {
+                    input.value = '';
+                    loadChatMessages();
+                });
+            });
+
+            document.getElementById('chatInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('chatSendBtn').click();
+            });
+
+            document.getElementById('closeChatPage').addEventListener('click', function() {
+                document.getElementById('chatPage').classList.remove('show');
+                chatTarget = null;
+            });
+
+            // ============================================================
+            // 个人中心
+            // ============================================================
+            function renderProfile(container) {
+                if (!currentUser || !currentProfile) {
+                    container.innerHTML =
+                        '<div class="section-title">👤 我的</div><div class="empty"><span class="icon">🔒</span>请先登录</div>';
+                    return;
+                }
+                container.innerHTML =
+                    '<div class="section-title">👤 我的</div>' +
+                    '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;">' +
+                    '<div style="text-align:center;font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;">✅ 已登录</div>' +
+                    '<div style="font-size:15px;color:var(--text-secondary);margin:4px 0;"><strong>昵称：</strong>' +
+                    sanitize(currentProfile.nickname) + '</div>' +
+                    '<div style="font-size:15px;color:var(--text-secondary);margin:4px 0;"><strong>真实姓名：</strong>' +
+                    sanitize(currentProfile.real_name || '未设置') + '</div>' +
+                    '<div style="font-size:15px;color:var(--text-secondary);margin:4px 0;"><strong>邀请码：</strong>' +
+                    sanitize(currentProfile.invite_code) + '</div>' +
+                    '<div style="font-size:15px;color:var(--text-secondary);margin:4px 0;"><strong>身份：</strong>' +
+                    (currentProfile.role || '客户') + '</div>' +
+                    '<div style="font-size:14px;color:var(--text-muted);margin:4px 0;"><strong>简介：</strong>' + sanitize(
+                        currentProfile.bio || '暂无') + '</div>' +
+                    '<button class="btn-block" id="logoutBtn" style="margin-top:16px;background:var(--red);">切换账号</button>' +
+                    '</div>';
+
+                document.getElementById('logoutBtn').addEventListener('click', function() {
+                    if (currentUser) {
+                        dbQuery('users', 'update', { online: false, session_id: null }, 'id=eq.' + currentUser
+                        .id);
+                    }
+                    clearSession();
+                    currentUser = null;
+                    currentProfile = null;
+                    updateUserDisplay();
+                    renderPage('home');
+                    showInviteModal();
+                    showToast('已退出', 'info');
+                });
+            }
+
+            // ============================================================
+            // 发布流程
+            // ============================================================
+            var publishStep = 0;
+            var publishData = { billingType: '', price: 0, duration: '', guarantee: '', contactType: '线上', contact: '',
+                playerName: '', gameId: '', rank: '', kd: '', maps: '', detail: '', earn: 0 };
+            var isAuditing = false;
+
+            function resetPublish() {
+                publishStep = 0;
+                isAuditing = false;
+                publishData = { billingType: '', price: 0, duration: '', guarantee: '', contactType: '线上', contact: '',
+                    playerName: '', gameId: '', rank: '', kd: '', maps: '', detail: '', earn: 0 };
+                document.getElementById('inputPrice').value = '';
+                document.getElementById('inputContactType').value = '线上';
+                document.getElementById('inputContact').value = '';
+                document.getElementById('inputPlayerName').value = '';
+                document.getElementById('inputGameId').value = '';
+                document.getElementById('inputRank').value = '';
+                document.getElementById('inputKD').value = '';
+                document.getElementById('inputMaps').value = '';
+                document.getElementById('inputDetail').value = '';
+                document.getElementById('earnHint').innerHTML = '到手：<strong>--</strong> 元';
+                document.querySelectorAll('#billingTypeGroup .tag-option').forEach(function(el) {
+                    el.classList.remove('selected');
+                });
+                document.getElementById('rejectBox').style.display = 'none';
+                document.getElementById('auditArea').style.display = 'none';
+                document.getElementById('resultArea').style.display = 'none';
+                document.querySelectorAll('.publish-step').forEach(function(el) {
+                    el.classList.remove('active');
+                });
+                document.querySelector('.publish-step[data-step="0"]').classList.add('active');
+                document.getElementById('ps1').className = 'step-dot active';
+                document.getElementById('ps2').className = 'step-dot empty';
+                document.getElementById('ps3').className = 'step-dot empty';
+                document.getElementById('ps4').className = 'step-dot empty';
+                document.getElementById('publishTitle').textContent = '发布新单';
+                document.getElementById('closePublishBtn2').style.display = 'block';
+                updatePriceSuggest();
+            }
+
+            function goToPublishStep(step) {
+                publishStep = step;
+                document.querySelectorAll('.publish-step').forEach(function(el) {
+                    el.classList.remove('active');
+                });
+                document.querySelector('.publish-step[data-step="' + step + '"]').classList.add('active');
+                var dots = ['ps1', 'ps2', 'ps3', 'ps4'];
+                dots.forEach(function(id, i) {
+                    var el = document.getElementById(id);
+                    if (i < step) el.className = 'step-dot done';
+                    else if (i === step) el.className = 'step-dot active';
+                    else el.className = 'step-dot empty';
+                });
+                var titles = ['价格设置', '联系方式', '打手资质', '确认发布'];
+                document.getElementById('publishTitle').textContent = '发布 · ' + (titles[step] || '');
+            }
+
+            function updatePriceSuggest() {
+                fetchOrders().then(function(orders) {
+                    var passed = orders.filter(function(o) { return o.audit === 'pass' && o.price > 0; });
+                    if (passed.length === 0) {
+                        document.getElementById('priceSuggest').innerHTML =
+                            '💡 建议价格：<strong>--</strong>（暂无历史数据）';
+                        return;
+                    }
+                    var avg = passed.reduce(function(s, o) { return s + o.price; }, 0) / passed.length;
+                    var suggest = Math.round(avg / 10) * 10;
+                    document.getElementById('priceSuggest').innerHTML = '💡 建议价格：<strong>¥' + suggest +
+                        '</strong>（基于 ' + passed.length + ' 笔历史订单）';
+                }).catch(function() {});
+            }
+
+            document.querySelectorAll('#billingTypeGroup .tag-option').forEach(function(el) {
+                el.addEventListener('click', function() {
+                    document.querySelectorAll('#billingTypeGroup .tag-option').forEach(function(e) {
+                        e.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    publishData.billingType = this.dataset.value;
+                });
+            });
+
+            document.getElementById('step1Next').addEventListener('click', function() {
+                if (!publishData.billingType) { showToast('请选择计费模式', 'error'); return; }
+                var container = document.getElementById('extraFieldGroup');
+                if (publishData.billingType === '时长制') {
+                    container.innerHTML =
+                        '<label>护航时长 <span class="sub">（例如：2小时）</span></label><input type="text" class="form-control" id="inputDuration" placeholder="例如 2小时">';
+                } else {
+                    container.innerHTML =
+                        '<label>保底机制 <span class="sub">（例如：保底5杀）</span></label><input type="text" class="form-control" id="inputGuarantee" placeholder="例如 保底5杀">';
+                }
+                var price = parseFloat(document.getElementById('inputPrice').value);
+                if (!price || price < 1) { showToast('请填写有效的价格（≥1元）', 'error'); return; }
+                publishData.price = price;
+                publishData.earn = calcEarn(price);
+
+                if (publishData.billingType === '时长制') {
+                    var dur = document.getElementById('inputDuration')?.value.trim();
+                    if (!dur) { showToast('请填写护航时长', 'error'); return; }
+                    if (!/小时|分钟|h|hour/i.test(dur)) {
+                        showToast('请填写正确的时间格式，如"2小时"', 'error');
+                        return;
+                    }
+                    publishData.duration = dur;
+                } else {
+                    var guar = document.getElementById('inputGuarantee')?.value.trim();
+                    if (!guar) { showToast('请填写保底机制', 'error'); return; }
+                    if (!guar.includes('保底')) {
+                        showToast('保底机制必须包含"保底"关键词，如"保底5杀"', 'error');
+                        return;
+                    }
+                    publishData.guarantee = guar;
+                }
+                goToPublishStep(1);
+            });
+
+            document.getElementById('inputPrice').addEventListener('input', function() {
+                var val = parseFloat(this.value);
+                if (val > 0) {
+                    var earn = calcEarn(val);
+                    document.getElementById('earnHint').innerHTML = '到手：<strong>¥' + earn.toFixed(2) +
+                        '</strong>（抽成 5%）';
+                } else {
+                    document.getElementById('earnHint').innerHTML = '到手：<strong>--</strong> 元';
+                }
+            });
+
+            document.getElementById('step2Next').addEventListener('click', function() {
+                publishData.contactType = document.getElementById('inputContactType').value;
+                var label = document.getElementById('contactLabel');
+                var input = document.getElementById('inputContact');
+                if (publishData.contactType === '线下') {
+                    label.textContent = '见面地址';
+                    input.placeholder = '例如：3栋502';
+                } else {
+                    label.textContent = '联系方式';
+                    input.placeholder = '微信号 / 手机号 / QQ / 邮箱';
+                }
+                var contact = sanitizeInput(document.getElementById('inputContact').value.trim());
+                if (!contact) { showToast('请填写联系方式', 'error'); return; }
+                publishData.contact = contact;
+
+                var detail = sanitizeInput(document.getElementById('inputDetail').value.trim());
+                if (!detail) { showToast('请填写订单详细描述', 'error'); return; }
+                publishData.detail = detail;
+
+                goToPublishStep(2);
+            });
+
+            document.getElementById('step3Next').addEventListener('click', function() {
+                if (!currentUser) { showToast('请先登录', 'error'); return; }
+                var name = sanitizeInput(document.getElementById('inputPlayerName').value.trim());
+                if (!name) { showToast('请填写你的昵称', 'error'); return; }
+                publishData.playerName = name;
+                publishData.gameId = sanitizeInput(document.getElementById('inputGameId').value.trim());
+                publishData.rank = sanitizeInput(document.getElementById('inputRank').value.trim());
+                publishData.kd = sanitizeInput(document.getElementById('inputKD').value.trim());
+                publishData.maps = sanitizeInput(document.getElementById('inputMaps').value.trim());
+
+                // 资质校验
+                if (!publishData.rank) { showToast('请填写段位', 'error'); return; }
+                if (!publishData.kd || parseFloat(publishData.kd) < 2.0) {
+                    showToast('绝密KD需 ≥ 2.0', 'error');
+                    return;
+                }
+                if (!publishData.maps || publishData.maps.split(',').length < 3) {
+                    showToast('请至少填写3张熟练地图，用逗号分隔', 'error');
+                    return;
+                }
+
+                document.getElementById('confirmPrice').textContent = publishData.price;
+                document.getElementById('confirmEarn').textContent = publishData.earn.toFixed(2);
+                document.getElementById('confirmBilling').textContent = publishData.billingType + (publishData
+                    .duration ?
+                    ' (' + sanitize(publishData.duration) + ')' : publishData.guarantee ? ' (' + sanitize(
+                        publishData.guarantee) + ')' :
+                    '');
+                document.getElementById('confirmContact').textContent = publishData.contactType + ' · ' + sanitize(
+                    publishData.contact);
+                document.getElementById('confirmDetail').textContent = sanitize(publishData.detail);
+                document.getElementById('confirmRank').textContent = sanitize(publishData.rank);
+                document.getElementById('confirmKD').textContent = sanitize(publishData.kd);
+
+                goToPublishStep(3);
+            });
+
+            document.getElementById('step4Next').addEventListener('click', function() {
+                fetchOrders().then(function(orders) {
+                    var userOrders = orders.filter(function(o) {
+                        return o.player_id === currentUser.id && o.audit !== 'reject' && o.status !==
+                            'completed';
+                    });
+                    if (userOrders.length >= 3) {
+                        showToast('你已发布3条订单，不能再发布了', 'error');
+                        return;
+                    }
+                    document.getElementById('closePublishBtn2').style.display = 'none';
+                    document.getElementById('auditArea').style.display = 'block';
+                    document.getElementById('publishTitle').textContent = '发布 · AI审核';
+                    startAudit();
+                });
+            });
+
+            // ===== AI审核 =====
+            function startAudit() {
+                if (isAuditing) return;
+                isAuditing = true;
+                var progress = document.getElementById('auditProgress');
+                var statusEl = document.getElementById('auditStatus');
+                var p = 0;
+                var interval = setInterval(function() {
+                    p += 2 + Math.random() * 4;
+                    if (p > 90) p = 90;
+                    progress.style.width = p + '%';
+                }, 200);
+                statusEl.textContent = '连接智谱大模型...';
+
+                var content =
+                    '昵称：' + publishData.playerName + '\n游戏ID：' + (publishData.gameId || '无') + '\n价格：' + publishData
+                    .price + '元\n计费模式：' + publishData.billingType + '\n' +
+                    (publishData.billingType === '时长制' ? '护航时长：' + publishData.duration : '') +
+                    (publishData.billingType === '保底制' ? '保底机制：' + publishData.guarantee : '') +
+                    '\n联系方式：' + publishData.contact + '\n订单描述：' + publishData.detail +
+                    '\n段位：' + publishData.rank + '\nKD：' + publishData.kd + '\n熟练地图：' + publishData.maps;
+
+                fetch('https://open.bigmodel.cn/api/paas/v4/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer d232c1fb05fc4f1cb33ce13a92636d3f.uM2eN8qXeeBFUwIy'
+                    },
+                    body: JSON.stringify({
+                        model: 'glm-4-flash',
+                        temperature: 0.01,
+                        messages: [
+                            { role: 'system',
+                                content: '你是游戏护航平台内容审核助手。只返回JSON：{"result":"pass"或"reject","reason":"具体原因"}。审核标准：昵称至少2字符且不能是纯数字；订单描述至少10字符；联系方式真实有效；段位不低于钻石；KD不低于2.0；熟练地图至少3张。' },
+                            { role: 'user', content: content }
+                        ]
+                    })
+                }).then(function(response) {
+                    return response.json();
+                }).then(function(data) {
+                    var raw = data.choices?.[0]?.message?.content || '';
+                    var auditResult = 'pass',
+                        auditReason = '';
+                    try {
+                        var parsed = JSON.parse(raw);
+                        auditResult = parsed.result === 'reject' ? 'reject' : 'pass';
+                        auditReason = parsed.reason || '';
+                    } catch (e) {
+                        if (raw.toLowerCase().includes('reject')) { auditResult = 'reject';
+                            auditReason = '内容不符合平台规范'; }
+                    }
+                    clearInterval(interval);
+                    progress.style.width = '100%';
+                    statusEl.textContent = auditResult === 'pass' ? '审核通过' : '审核未通过';
+
+                    var finalRate = 0.05;
+                    var order = {
+                        id: generateId(),
+                        player_id: currentUser.id,
+                        player_name: publishData.playerName,
+                        game_id: publishData.gameId || '',
+                        price: publishData.price,
+                        earn: publishData.earn,
+                        rate: finalRate,
+                        billing_type: publishData.billingType,
+                        duration: publishData.duration || '',
+                        guarantee: publishData.guarantee || '',
+                        contact_type: publishData.contactType,
+                        contact: publishData.contact,
+                        description: publishData.detail,
+                        rank: publishData.rank,
+                        kd: publishData.kd,
+                        maps: publishData.maps,
+                        status: '空闲',
+                        audit: auditResult,
+                        audit_reason: auditReason,
+                        collected: false,
+                        created_at: new Date().toISOString()
+                    };
+
+                    return dbQuery('orders', 'insert', order);
+                }).then(function() {
+                    document.getElementById('auditArea').style.display = 'none';
+                    document.getElementById('resultArea').style.display = 'block';
+                    document.getElementById('publishTitle').textContent = '发布 · 完成';
+                    document.getElementById('resultIcon').textContent = '✅';
+                    document.getElementById('resultTitle').textContent = '发布成功';
+                    document.getElementById('resultDesc').textContent = '订单已出现在首页';
+                    document.getElementById('rejectBox').style.display = 'none';
+                    renderPage('home');
+                }).catch(function(err) {
+                    clearInterval(interval);
+                    progress.style.width = '100%';
+                    statusEl.textContent = '⚠️ 发布失败: ' + err.message;
+                    document.getElementById('auditArea').style.display = 'none';
+                    document.getElementById('resultArea').style.display = 'block';
+                    document.getElementById('publishTitle').textContent = '发布 · 完成';
+                    document.getElementById('resultIcon').textContent = '❌';
+                    document.getElementById('resultTitle').textContent = '发布失败';
+                    document.getElementById('resultDesc').textContent = err.message || '请检查网络后重试';
+                    document.getElementById('rejectBox').style.display = 'none';
+                }).finally(function() {
+                    isAuditing = false;
+                });
+            }
+
+            document.getElementById('resultDone').addEventListener('click', function() {
+                document.getElementById('publishPage').classList.remove('show');
+                resetPublish();
+                renderPage('home');
+            });
+
+            // ============================================================
+            // UI控制
+            // ============================================================
+            document.getElementById('publishBtn').addEventListener('click', function() {
+                if (!currentUser) {
+                    showToast('请先登录', 'error');
+                    return;
+                }
+                if (currentProfile && currentProfile.role !== '打手') {
+                    showToast('只有打手账号可以发布订单', 'error');
+                    return;
+                }
+                resetPublish();
+                try {
+                    var lastPlayer = localStorage.getItem('ps_last_player');
+                    var lastGameId = localStorage.getItem('ps_last_gameid');
+                    if (lastPlayer) document.getElementById('inputPlayerName').value = lastPlayer;
+                    if (lastGameId) document.getElementById('inputGameId').value = lastGameId;
+                } catch (_) {}
+                document.getElementById('publishPage').classList.add('show');
+            });
+
+            document.getElementById('closePublishPage').addEventListener('click', function() {
+                document.getElementById('publishPage').classList.remove('show');
+                resetPublish();
+            });
+            document.getElementById('closePublishBtn2').addEventListener('click', function() {
+                document.getElementById('publishPage').classList.remove('show');
+                resetPublish();
+            });
+            document.getElementById('closeDetailPage').addEventListener('click', function() {
+                document.getElementById('detailPage').classList.remove('show');
+            });
+
+            document.getElementById('refreshBtn').addEventListener('click', function() {
+                renderPage(currentPage);
+                showToast('已刷新', 'info');
+            });
+
+            document.querySelectorAll('.nav-item').forEach(function(item) {
+                item.addEventListener('click', function() {
+                    var page = this.dataset.page;
+                    if (page === 'publish') {
+                        document.getElementById('publishBtn').click();
+                        return;
+                    }
+                    renderPage(page);
+                });
+            });
+
+            // ============================================================
+            // 管理员入口
+            // ============================================================
+            var titleClickCount = 0;
+            var titleClickTimer = null;
+            document.getElementById('mainTitle').addEventListener('click', function() {
+                titleClickCount++;
+                if (titleClickTimer) clearTimeout(titleClickTimer);
+                titleClickTimer = setTimeout(function() { titleClickCount = 0; }, 1500);
+                if (titleClickCount >= 5) {
+                    titleClickCount = 0;
+                    if (currentUser) {
+                        window.location.href = '/admin.html';
+                    } else {
+                        showToast('请先登录', 'error');
+                    }
+                }
+            });
+
+            // ============================================================
+            // 启动
+            // ============================================================
+            function init() {
+                tryAutoLogin();
+                setupRealtime();
+                startPolling();
+
+                var rate = getRatePercent();
+                document.getElementById('rateDisplay').textContent = rate + '%';
+                document.getElementById('rateValue').textContent = rate + '%';
+
+                setInterval(function() {
+                    if (currentUser) {
+                        dbQuery('users', 'update', { online: true, last_seen: new Date().toISOString() },
+                            'id=eq.' + currentUser.id);
+                    }
+                }, 30000);
+
+                window.addEventListener('beforeunload', function() {
+                    if (currentUser) {
+                        dbQuery('users', 'update', { online: false, session_id: null }, 'id=eq.' + currentUser
+                            .id);
+                    }
+                });
+
+                console.log('✅ PRECISION STRIKE 完整版已启动');
+                console.log('✅ 邀请码: 4858689999');
+                console.log('✅ 管理员入口: 连续点击标题5次');
+                console.log('✅ 抽成: 5%');
+                console.log('✅ 实时同步已开启（Realtime + 2秒轮询）');
+            }
+
+            window.renderPage = renderPage;
+
+            setTimeout(function() {
+                if (currentUser) {
+                    renderPage('home');
+                }
+            }, 300);
+
+            init();
+
+        })();
+    </script>
+
+</body>
+</html>
